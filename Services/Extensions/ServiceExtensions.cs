@@ -12,6 +12,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using System.Reflection;
 using App.Services.ExceptionHandler;
+using App.Services.Categories;
 
 namespace App.Services.Extensions
 {
@@ -21,6 +22,7 @@ namespace App.Services.Extensions
         {
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddFluentValidationAutoValidation();//manuel validationını kapatmamız lazım
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 

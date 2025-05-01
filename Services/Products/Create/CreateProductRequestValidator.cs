@@ -24,6 +24,9 @@ namespace App.Services.Products.Create
             //.MustAsync(MustUniqueProductNameAsync).WithMessage("Ürün ismi veritabanında bulunmaktadır.");
             //.Must(MustUniqueProductName).WithMessage("Ürün ismi veritabanında bulunmaktadır.");
 
+            RuleFor(x => x.CategoryId)
+                .GreaterThan(0).WithMessage("Ürün kategori değeri fiyatı 0' dan büyük olmalıdır.");
+
             RuleFor(x => x.Price)
                 .GreaterThan(0).WithMessage("Ürün fiyatı 0' dan büyük olmalıdır.");
 

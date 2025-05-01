@@ -109,7 +109,7 @@ namespace App.Services.Products
 
             if (anyProduct)
             {
-                return ServiceResult<CreateProductResponse>.Fail("Ürün ismi veritabanında bulunmaktadır.", HttpStatusCode.BadRequest);
+                return ServiceResult<CreateProductResponse>.Fail("Ürün ismi veritabanında bulunmaktadır.", HttpStatusCode.NotFound);
             }
             //sağlıklı değil burada yazmak async oldu ama
 
@@ -151,7 +151,7 @@ namespace App.Services.Products
 
             if(product is null)
             {
-               return  ServiceResult.Fail("Product is not found", HttpStatusCode.NotFound);
+               return  ServiceResult.Fail("güncellenecek ürün bulunamadı.", HttpStatusCode.NotFound);
             }
 
             var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
