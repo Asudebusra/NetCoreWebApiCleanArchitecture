@@ -1,4 +1,5 @@
 ﻿using App.Repositories.Categories;
+using App.Repositories.Interceptors;
 using App.Repositories.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,8 @@ namespace App.Repositories.Extensions
                     sqlServerOptionsAction.MigrationsAssembly(typeof(RepositoryAssembly).Assembly.FullName);
 
                 }); // datanın null olmayacağı anlamına geliyor
+
+                options.AddInterceptors(new AuditDbContextInterceptor());
             });
 
             services.AddScoped<IProductRepository, ProductRepository>();

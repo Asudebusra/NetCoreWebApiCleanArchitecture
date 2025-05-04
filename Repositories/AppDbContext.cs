@@ -20,5 +20,14 @@ namespace App.Repositories
             //Bu repository içerisindeki IEntityTypeConfiguration implement etmiş tüm sınıfları al 
             base.OnModelCreating(modelBuilder); 
         }
+        //kötü bir yöntem db contexti kirletmiş oluyoruz
+        //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        //{
+
+
+
+
+        //    return base.SaveChangesAsync(cancellationToken);
+        //}
     }
 }
