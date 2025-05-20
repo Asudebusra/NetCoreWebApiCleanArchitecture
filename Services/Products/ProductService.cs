@@ -146,15 +146,16 @@ namespace App.Services.Products
             //önce olumsuz durumları dönmek demektir sonra olumlu durumları dönmek demektir.
 
             //Guard Clouses 
-            //önce bir gardını al yani olumsuz durumlara karşı kendini koru ifle yaz 
-            var product = await productRepository.GetByIdAsync(id);
+            //önce bir gardını al yani olumsuz durumlara karşı kendini koru ifle yaz
+            //filter var gerek yok
+            //var product = await productRepository.GetByIdAsync(id);
 
-            if(product is null)
-            {
-               return  ServiceResult.Fail("güncellenecek ürün bulunamadı.", HttpStatusCode.NotFound);
-            }
+            //if(product is null)
+            //{
+            //   return  ServiceResult.Fail("güncellenecek ürün bulunamadı.", HttpStatusCode.NotFound);
+            //}
 
-            var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+            var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != id).AnyAsync();
 
             if (isProductNameExist)
             {
@@ -167,7 +168,8 @@ namespace App.Services.Products
             //product.Price = request.Price;
             //product.Stock = request.Stock;
 
-            product = mapper.Map(request, product);
+            var  product = mapper.Map<Product>(request);
+            product.Id = id;
 
             productRepository.Update(product);
             await unitOfWork.SaveChangeAsync();
@@ -194,11 +196,11 @@ namespace App.Services.Products
         public async Task<ServiceResult> DeleteAsync(int id)
         {
             var product = await productRepository.GetByIdAsync(id);
-
-            if(product is null)
-            {
-                return ServiceResult.Fail("Product is not found", HttpStatusCode.NotFound);
-            }
+            //Filter dan gecince gerek yok artık null yapmaya 
+            //if(product is null)
+            //{
+            //    return ServiceResult.Fail("Product is not found", HttpStatusCode.NotFound);
+            //}
 
             productRepository.Delete(product);
             await unitOfWork.SaveChangeAsync();

@@ -13,7 +13,7 @@ builder.Services.AddControllers(options => {
     options.Filters.Add<FluentValidationFilter>();
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;//referans tipler için nullable deðerleri kontrol etmeyecek
   });
-builder.Services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true); //.net in otomatik hata dönmesine yarayan toolunu kapattýk 
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

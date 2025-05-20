@@ -8,12 +8,19 @@ using System.Threading.Tasks;
 
 namespace App.Repositories
 {
-    public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T> where T : class
+    public class GenericRepository<T,TId>(AppDbContext context) : IGenericRepository<T,TId> where T : BaseEntity<TId> where TId : struct
     {
         protected AppDbContext Context = context; //miras alınan sınıflarda kullanılsın 
 
 
         private readonly DbSet<T> _dbset = context.Set<T>();
+
+        public Task<bool> AnyAsync(TId id) 
+        {
+            return _dbset.AnyAsync(x => x.Id.Equals(id));
+        } 
+
+        //public Task<Boolean> Find ile kullanabilirdik ama 80 tane veri var diyelim ki hepsi gelcek ama gerek yok ki sadece any durumuna bakıcaz
 
         public async ValueTask AddAsync(T entity)
         {

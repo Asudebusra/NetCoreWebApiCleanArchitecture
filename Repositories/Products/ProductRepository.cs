@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace App.Repositories.Products
 {//cunstructlar miras yoluya gelmez
     //IGenericRepository nin interfacei ni de miras almalıyım.Bir class bir tane classı miras alabilir ama birden fazla interface implamente alabilir.
-    public class ProductRepository(AppDbContext context) : GenericRepository<Product>(context), IProductRepository
+    public class ProductRepository(AppDbContext context) : GenericRepository<Product,int>(context), IProductRepository
     {
         public Task<List<Product>> GetTopPriceProductAsync(int count)
         {
