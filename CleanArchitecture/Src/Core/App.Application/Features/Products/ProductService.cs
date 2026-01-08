@@ -1,4 +1,5 @@
-﻿using App.Application.Contracts.Persistence;
+﻿using App.Application.Contracts.Caching;
+using App.Application.Contracts.Persistence;
 using App.Application.Features.Products.Create;
 using App.Application.Features.Products.Dto;
 using App.Application.Features.Products.Update;
@@ -18,8 +19,13 @@ namespace App.Application.Features.Products
     //        var products = productRepository.GetAll().OrderByDescending(x => x.Price).Take(5); // --> repository e ait birkod 
     //    }
     //}
-    public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IValidator<CreateProductRequest> createProductRequestValidator, IMapper mapper) : IProductService
+    public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IValidator<CreateProductRequest> createProductRequestValidator, IMapper mapper,ICacheService cacheService) : IProductService
     {
+
+        private const string ProductListCacheKey = "ProductListCacheKey";
+
+
+
         //public Task<List<Product>> GetTopPriceProductAsync(int count)
         //{
         //    return productRepository.GetTopPriceProductAsync(count);
@@ -81,12 +87,25 @@ namespace App.Application.Features.Products
 
         public async Task<ServiceResult<List<ProductDto>>> GetAllListAsync()
         {
+            //burada cache aside desing pattern 
+            //1. adımda önce cache datayı sor 
+            //2. adımda cache de yoksa from db 
+            //3. adımda db den gelen datayı cache'e yaz 
+
+            var productListAsCached = await cacheService.GetAsync<List<ProductDto>>(ProductListCacheKey);
+
+            if (productListAsCached is not null) return ServiceResult<List<ProductDto>>.Success(productListAsCached);
+
+            //altta db den çekicek 
             var products = await productRepository.GetAllAsync();
 
             //var productAsDto = products.Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock)).ToList(); manuel mapping 
 
             var productAsDto = mapper.Map<List<ProductDto>>(products);
 
+            //db' den çekilen datayı cacheleyeceğiz
+
+            await cacheService.AddAsync(ProductListCacheKey,productAsDto,TimeSpan.FromMinutes(1));
 
             return ServiceResult<List<ProductDto>>.Success(productAsDto);
         }
