@@ -1,5 +1,6 @@
 using App.Application.Contracts.Caching;
 using App.Application.Extensions;
+using App.Bus;
 using App.Caching;
 using App.Persistence.Extensions;
 using CleanApp.API.ExceptionHandler;
@@ -20,7 +21,7 @@ builder.Services.AddControllersWithFiltersExt().AddSwaggerGenExt().AddExceptionH
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 //builder.Services.AddSwaggerGenExt(); ayrý ayrý yazmaya gerek yok çünkü extension yazdýk
-builder.Services.AddRepositories(builder.Configuration).AddServices(builder.Configuration);
+builder.Services.AddRepositories(builder.Configuration).AddServices(builder.Configuration).AddBusExt(builder.Configuration);
 //builder.Services.AddScoped(typeof(NotFoundFilter<,>));
 
 //builder.Services.AddExceptionHandler<CriticalExceptionHandler>();

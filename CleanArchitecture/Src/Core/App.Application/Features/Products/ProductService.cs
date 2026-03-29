@@ -3,7 +3,9 @@ using App.Application.Contracts.Persistence;
 using App.Application.Features.Products.Create;
 using App.Application.Features.Products.Dto;
 using App.Application.Features.Products.Update;
+using App.Application.ServiceBus;
 using App.Domain.Entities;
+using App.Domain.Events;
 using App.Services.Products.UpdateStock;
 using AutoMapper;
 using FluentValidation;
@@ -19,7 +21,7 @@ namespace App.Application.Features.Products
     //        var products = productRepository.GetAll().OrderByDescending(x => x.Price).Take(5); // --> repository e ait birkod 
     //    }
     //}
-    public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IValidator<CreateProductRequest> createProductRequestValidator, IMapper mapper,ICacheService cacheService) : IProductService
+    public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IValidator<CreateProductRequest> createProductRequestValidator, IMapper mapper,ICacheService cacheService,IServiceBus busService) : IProductService
     {
 
         private const string ProductListCacheKey = "ProductListCacheKey";
@@ -150,6 +152,10 @@ namespace App.Application.Features.Products
 
             await productRepository.AddAsync(product);
             await unitOfWork.SaveChangeAsync();
+
+            await busService.PublishAsync(new ProductAddedEvent(product.Id, product.Name, product.Price));
+
+
 
             return ServiceResult<CreateProductResponse>.SuccessAsCreated(new CreateProductResponse(product.Id), $"api/products/{product.Id}");
         }
